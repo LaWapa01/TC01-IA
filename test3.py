@@ -1,6 +1,6 @@
 import heapq
 import time
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 class BoardState:
     def __init__(self, board, g=0, parent=None):
@@ -76,6 +76,7 @@ def print_board(board):
         print(' '.join(c if c else ' ' for c in row))
     print()
 
+"""
 def plot_performance(times, moves, labels):
     fig, ax1 = plt.subplots()
 
@@ -101,6 +102,8 @@ def plot_performance(times, moves, labels):
     fig.tight_layout()
     plt.title('Performance of A* Algorithm')
     plt.show()
+
+"""
 
 if __name__ == "__main__":
     # Definir diferentes configuraciones iniciales para pruebas
@@ -132,24 +135,6 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
-        [
-            [None, None, '*', '*', '*', None, None],
-            [None, None, '*', '*', '*', None, None],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            ['*', '*', '*', 'o', '*', '*', '*'],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            [None, None, '*', '*', '*', None, None],
-            [None, None, '*', '*', '*', None, None]
-        ],
-        [
-            [None, None, '*', '*', '*', None, None],
-            [None, None, '*', 'o', '*', None, None],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            [None, None, '*', 'o', '*', None, None],
-            [None, None, '*', '*', '*', None, None]
-        ]
     ]
 
     execution_times = []
@@ -185,4 +170,4 @@ if __name__ == "__main__":
         labels.append(f"Case {idx + 1}")
 
     # Graficar el desempeño
-    plot_performance(execution_times, move_counts, labels)
+#    plot_performance(execution_times, move_counts, labels)

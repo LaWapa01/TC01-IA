@@ -1,7 +1,8 @@
 import heapq
 import time
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
+#En esta clase se calcula el g(n)
 class BoardState:
     def __init__(self, board, g=0, parent=None):
         self.board = board
@@ -14,6 +15,7 @@ class BoardState:
     def __hash__(self):
         return hash(str(self.board))
 
+    # Comparación de Estados, Esta función calcula f(n)=g(n)+h(n)
     def __lt__(self, other):
         return (self.g + heuristic(self)) < (other.g + heuristic(other))
 
@@ -39,6 +41,7 @@ def get_legal_moves(state):
                         legal_moves.append(BoardState(new_board, state.g + 1, state))
     return legal_moves
 
+# Acá se calcula el h(n)
 def heuristic(state):
     # Heurística: Número de piezas restantes - 1
     return sum(row.count('*') for row in state.board) - 1
@@ -60,6 +63,8 @@ def a_star(initial_state):
         for move in get_legal_moves(current_state):
             if move not in closed_set:
                 closed_set.add(move)  # Añadir el movimiento a closed_set para evitar ciclos
+                # Inserción en la Cola de Prioridad 
+                # Cada vez que se inserta un estado en la cola de prioridad, se calcula 𝑓(𝑛)f(n).
                 heapq.heappush(open_list, (move.g + heuristic(move), move))
     
     return None
@@ -76,6 +81,7 @@ def print_board(board):
         print(' '.join(c if c else ' ' for c in row))
     print()
 
+    """
 def plot_performance(times, moves, labels):
     fig, ax1 = plt.subplots()
 
@@ -97,6 +103,8 @@ def plot_performance(times, moves, labels):
     plt.title('Performance of A* Algorithm')
     plt.show()
 
+    """
+
 if __name__ == "__main__":
     # Definir diferentes configuraciones iniciales para pruebas
     test_cases = [
@@ -107,15 +115,6 @@ if __name__ == "__main__":
             ['*', '*', '*', 'o', '*', '*', '*'],
             ['*', '*', '*', '*', '*', '*', '*'],
             [None, None, '*', '*', '*', None, None],
-            [None, None, '*', '*', '*', None, None]
-        ],
-        [
-            [None, None, '*', '*', '*', None, None],
-            [None, None, '*', 'o', '*', None, None],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            ['*', '*', '*', '*', '*', '*', '*'],
-            [None, None, '*', 'o', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
         # Agrega más configuraciones si es necesario
@@ -154,4 +153,4 @@ if __name__ == "__main__":
         labels.append(f"Case {idx + 1}")
 
     # Graficar el desempeño
-    plot_performance(execution_times, move_counts, labels)
+    #plot_performance(execution_times, move_counts, labels)
