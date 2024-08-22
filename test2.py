@@ -4,37 +4,37 @@ import time
 
 #En esta clase se calcula el g(n)
 class estadoTablero:
-    def __init__(self, board, g=0, parent=None):
-        self.board = board
-        self.g = g  # Costo desde el inicio hasta este nodo
-        self.parent = parent  # Nodo padre para reconstruir el camino
+    def __init__(actual, tablero, g=0, padre=None):
+        actual.tablero = tablero
+        actual.g = g  # Costo desde el inicio hasta este nodo
+        actual.padre = padre  # Nodo padre para reconstruir el camino
 
-    def __eq__(self, other):
-        return self.board == other.board
+    def __eq__(actual, otro):
+        return actual.tablero == otro.tablero
 
-    def __hash__(self):
-        return hash(str(self.board))
+    def __hash__(actual):
+        return hash(str(actual.tablero))
 
     # Comparación de Estados, Esta función calcula f(n)=g(n)+h(n)
-    def __lt__(self, other):
-        return (self.g + heuristica(self)) < (other.g + heuristica(other))
+    def __lt__(actual, otro):
+        return (actual.g + heuristica(actual)) < (otro.g + heuristica(otro))
 
-    def is_goal(self):
+    def es_deseado(actual):
         # Comprueba si el tablero está en el estado objetivo
-        return self.board[3][3] == '*' and sum(row.count('*') for row in self.board) == 1
+        return actual.tablero[3][3] == '*' and sum(fila.count('*') for fila in actual.tablero) == 1
 
 def get_legal_moves(estado):
-    directions = [(-2, 0), (2, 0), (0, -2), (0, 2)]
+    direcciones = [(-2, 0), (2, 0), (0, -2), (0, 2)]
     movimientos_permitidos = []
     
     for r in range(7):
         for c in range(7):
-            if estado.board[r][c] == '*':
-                for dr, dc in directions:
+            if estado.tablero[r][c] == '*':
+                for dr, dc in direcciones:
                     nr, nc = r + dr, c + dc
                     mr, mc = r + dr // 2, c + dc // 2
-                    if 0 <= nr < 7 and 0 <= nc < 7 and estado.board[nr][nc] == 'o' and estado.board[mr][mc] == '*':
-                        nuevo_tablero = [row[:] for row in estado.board]
+                    if 0 <= nr < 7 and 0 <= nc < 7 and estado.tablero[nr][nc] == 'o' and estado.tablero[mr][mc] == '*':
+                        nuevo_tablero = [fila[:] for fila in estado.tablero]
                         nuevo_tablero[r][c] = 'o'
                         nuevo_tablero[mr][mc] = 'o'
                         nuevo_tablero[nr][nc] = '*'
@@ -44,41 +44,41 @@ def get_legal_moves(estado):
 # Acá se calcula el h(n)
 def heuristica(estado):
     # Heurística: Número de piezas restantes - 1
-    return sum(row.count('*') for row in estado.board) - 1
+    return sum(fila.count('*') for fila in estado.tablero) - 1
 
 def a_estrella(estado_inicial):
-    open_list = []
-    closed_set = set()
+    lista_abierta = []
+    lista_cerrada = set()
 
-    heapq.heappush(open_list, (heuristica(estado_inicial), estado_inicial))
+    heapq.heappush(lista_abierta, (heuristica(estado_inicial), estado_inicial))
 
-    while open_list:
-        _, estado_actual = heapq.heappop(open_list)
+    while lista_abierta:
+        _, estado_actual = heapq.heappop(lista_abierta)
 
-        if estado_actual.is_goal():
+        if estado_actual.es_deseado():
             return estado_actual
 
-        closed_set.add(estado_actual)
+        lista_cerrada.add(estado_actual)
 
         for movimiento in get_legal_moves(estado_actual):
-            if movimiento not in closed_set:
-                closed_set.add(movimiento)  # Añadir el movimiento a closed_set para evitar ciclos
+            if movimiento not in lista_cerrada:
+                lista_cerrada.add(movimiento)  # Añadir el movimiento a lista_cerrada para evitar ciclos
                 # Inserción en la Cola de Prioridad 
                 # Cada vez que se inserta un estado en la cola de prioridad, se calcula 𝑓(𝑛)f(n).
-                heapq.heappush(open_list, (movimiento.g + heuristica(movimiento), movimiento))
+                heapq.heappush(lista_abierta, (movimiento.g + heuristica(movimiento), movimiento))
     
     return None
 
-def reconstruct_path(estado):
-    path = []
+def recalcular_camino(estado):
+    camino = []
     while estado:
-        path.append(estado)
-        estado = estado.parent
-    return path[::-1]
+        camino.append(estado)
+        estado = estado.padre
+    return camino[::-1]
 
-def print_board(board):
-    for row in board:
-        print(' '.join(c if c else ' ' for c in row))
+def imprimir_tablero(tablero):
+    for fila in tablero:
+        print(' '.join(c if c else ' ' for c in fila))
     print()
 
     """
@@ -107,7 +107,7 @@ def plot_performance(times, moves, labels):
 
 if __name__ == "__main__":
     # Definir diferentes configuraciones iniciales para pruebas
-    test_cases = [
+    casos_prueba = [
         [
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None],
@@ -120,37 +120,37 @@ if __name__ == "__main__":
         # Agrega más configuraciones si es necesario
     ]
 
-    execution_times = []
-    move_counts = []
+    tiempos_ejecucion = []
+    movimientos = []
     labels = []
 
-    for idx, initial_board in enumerate(test_cases):
+    for idx, tablero_inicial in enumerate(casos_prueba):
         print(f"\n----------------------------------")
-        print(f"\nTesting case {idx + 1}...")
-        estado_inicial = estadoTablero(initial_board)
+        print(f"\nResolviendo caso {idx + 1}...")
+        estado_inicial = estadoTablero(tablero_inicial)
 
-        print("Initial board estado:")
-        print_board(initial_board)  # Imprimir el tablero inicial
+        print("Estado inicial del tablero:")
+        imprimir_tablero(tablero_inicial)  # Imprimir el tablero inicial
 
-        start_time = time.time()
-        goal_state = a_estrella(estado_inicial)
-        end_time = time.time()
+        tiempo_inicial = time.time()
+        estado_deseado = a_estrella(estado_inicial)
+        tiempo_final = time.time()
 
-        if goal_state:
-            path = reconstruct_path(goal_state)
-            num_moves = len(path) - 1
-            print(f"Number of moves: {num_moves}")
-            move_counts.append(num_moves)
-            print("Final board estado:")
-            print_board(goal_state.board)  # Imprimir el tablero final
+        if estado_deseado:
+            camino = recalcular_camino(estado_deseado)
+            numero_movimientos = len(camino) - 1
+            print(f"Numero de movimientos: {numero_movimientos}")
+            movimientos.append(numero_movimientos)
+            print("Estado final del tablero:")
+            imprimir_tablero(estado_deseado.tablero)  # Imprimir el tablero final
         else:
-            print("No solution found")
-            move_counts.append(None)  # No hay solución
+            print("Ninguna solucion encontrada")
+            movimientos.append(None)  # No hay solución
 
-        execution_time = end_time - start_time
-        print(f"Execution time for test case {idx + 1}: {execution_time:.2f} seconds")
-        execution_times.append(execution_time)
-        labels.append(f"Case {idx + 1}")
+        tiempo_ejecucion = tiempo_final - tiempo_inicial
+        print(f"Tiempo de ejecucion para el caso de prueba {idx + 1}: {tiempo_ejecucion:.2f} segundos")
+        tiempos_ejecucion.append(tiempo_ejecucion)
+        labels.append(f"Caso {idx + 1}")
 
     # Graficar el desempeño
-    #plot_performance(execution_times, move_counts, labels)
+    #plot_performance(tiempos_ejecucion, movimientos, labels)
