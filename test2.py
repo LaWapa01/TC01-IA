@@ -23,7 +23,7 @@ class estadoTablero:
         # Comprueba si el tablero está en el estado objetivo
         return actual.tablero[3][3] == '*' and sum(fila.count('*') for fila in actual.tablero) == 1
 
-def get_legal_moves(estado):
+def obtener_movimientos_correctos(estado):
     direcciones = [(-2, 0), (2, 0), (0, -2), (0, 2)]
     movimientos_permitidos = []
     
@@ -60,7 +60,7 @@ def a_estrella(estado_inicial):
 
         lista_cerrada.add(estado_actual)
 
-        for movimiento in get_legal_moves(estado_actual):
+        for movimiento in obtener_movimientos_correctos(estado_actual):
             if movimiento not in lista_cerrada:
                 lista_cerrada.add(movimiento)  # Añadir el movimiento a lista_cerrada para evitar ciclos
                 # Inserción en la Cola de Prioridad 
@@ -127,22 +127,22 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None]
         ],
 	[ 
-            [None, None, 'o', 'o', 'o', None, None],
-            [None, None, '*', 'o', 'o', None, None],
-            ['o', '*', 'o', 'o', '*', 'o', '*'],
-            ['*', 'o', '*', '*', '*', 'o', '*'],
-            ['*', '*', 'o', '*', 'o', '*', 'o'],
+            [None, None, '*', '*', '*', None, None],
+            [None, None, '*', 'o', '*', None, None],
+            ['*', '*', 'o', '*', '*', '*', '*'],
+            ['*', 'o', '*', '*', '*', '*', '*'],
+            ['*', '*', 'o', 'o', '*', '*', '*'],
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
 	[ 
-            [None, None, 'o', 'o', 'o', None, None],
-            [None, None, '*', 'o', 'o', None, None],
-            ['o', '*', '*', 'o', '*', 'o', 'o'],
-            ['*', 'o', 'o', '*', 'o', 'o', 'o'],
-            ['*', 'o', 'o', '*', '*', 'o', 'o'],
-            [None, None, 'o', 'o', 'o', None, None],
-            [None, None, 'o', 'o', 'o', None, None]
+            [None, None, '*', '*', '*', None, None],
+            [None, None, '*', 'o', '*', None, None],
+            ['*', '*', 'o', '*', 'o', '*', '*'],
+            ['*', '*', 'o', '*', '*', 'o', '*'],
+            ['*', '*', '*', '*', '*', '*', '*'],
+            [None, None, '*', '*', '*', None, None],
+            [None, None, '*', '*', '*', None, None]
         ],
         # Agrega más configuraciones si es necesario
     ]
