@@ -117,6 +117,33 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
+        [ 
+            [None, None, '*', '*', 'o', None, None],
+            [None, None, '*', 'o', '*', None, None],
+            ['o', '*', '*', 'o', 'o', 'o', '*'],
+            ['*', 'o', '*', '*', '*', '*', '*'],
+            ['*', '*', '*', '*', '*', '*', '*'],
+            [None, None, '*', '*', '*', None, None],
+            [None, None, '*', '*', '*', None, None]
+        ],
+	[ 
+            [None, None, 'o', 'o', 'o', None, None],
+            [None, None, '*', 'o', 'o', None, None],
+            ['o', '*', 'o', 'o', '*', 'o', '*'],
+            ['*', 'o', '*', '*', '*', 'o', '*'],
+            ['*', '*', 'o', '*', 'o', '*', 'o'],
+            [None, None, '*', '*', '*', None, None],
+            [None, None, '*', '*', '*', None, None]
+        ],
+	[ 
+            [None, None, 'o', 'o', 'o', None, None],
+            [None, None, '*', 'o', 'o', None, None],
+            ['o', '*', '*', 'o', '*', 'o', 'o'],
+            ['*', 'o', 'o', '*', 'o', 'o', 'o'],
+            ['*', 'o', 'o', '*', '*', 'o', 'o'],
+            [None, None, 'o', 'o', 'o', None, None],
+            [None, None, 'o', 'o', 'o', None, None]
+        ],
         # Agrega más configuraciones si es necesario
     ]
 
