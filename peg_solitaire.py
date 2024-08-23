@@ -23,6 +23,7 @@ class estadoTablero:
         # Comprueba si el tablero está en el estado objetivo
         return actual.tablero[3][3] == '*' and sum(fila.count('*') for fila in actual.tablero) == 1
 
+# Genera los movimientos válidos desde un estado dado del tablero.
 def obtener_movimientos_correctos(estado):
     direcciones = [(-2, 0), (2, 0), (0, -2), (0, 2)]
     movimientos_permitidos = []
@@ -42,19 +43,29 @@ def obtener_movimientos_correctos(estado):
     return movimientos_permitidos
 
 # Acá se calcula el h(n)
+# Calcula la heurística del estado, que es el número de piezas restantes menos una.
+# Cuanto menor sea el valor, más cerca está de la solución.
 def heuristica(estado):
     # Heurística: Número de piezas restantes - 1
     return sum(fila.count('*') for fila in estado.tablero) - 1
 
+# Funcion para crear el A* donde se tienen las lista abierta y cerrada
 def a_estrella(estado_inicial):
     lista_abierta = []
     lista_cerrada = set()
 
+    # agrega cada nuevo movimiento a la lista abierta
     heapq.heappush(lista_abierta, (heuristica(estado_inicial), estado_inicial))
+
+    # Si encuentra el estado objetivo, lo devuelve; de lo contrario, continúa explorando hasta agotar todas las posibilidades.
 
     while lista_abierta:
         _, estado_actual = heapq.heappop(lista_abierta)
 
+        #print("---- ---- ----")
+        #imprimir_tablero(estado_actual.tablero)
+
+        # Verificar si el estado actual es el que se tiene como objetivo
         if estado_actual.es_deseado():
             return estado_actual
 
@@ -69,46 +80,26 @@ def a_estrella(estado_inicial):
     
     return None
 
+# Reconstruye el camino desde el estado inicial hasta el estado objetivo recorriendo los nodos padres
 def recalcular_camino(estado):
     camino = []
     while estado:
         camino.append(estado)
         estado = estado.padre
+    # Devuelve una lista con los estados en el orden en que se deben recorrer para llegar al estado objetivo
     return camino[::-1]
 
+# Imprime el tablero en la consola
 def imprimir_tablero(tablero):
     for fila in tablero:
         print(' '.join(c if c else ' ' for c in fila))
     print()
 
-    """
-def plot_performance(times, moves, labels):
-    fig, ax1 = plt.subplots()
-
-    # Configuración para el tiempo de ejecución
-    color = 'tab:green'
-    ax1.set_xlabel('Test Case')
-    ax1.set_ylabel('Execution Time (seconds)', color=color)
-    ax1.plot(labels, times, color=color, marker='o', label='Execution Time')
-    ax1.tick_params(axis='y', labelcolor=color)
-
-    # Configuración para la cantidad de movimientos
-    ax2 = ax1.twinx()
-    color = 'tab:blue'
-    ax2.set_ylabel('Number of Moves', color=color)
-    ax2.plot(labels, moves, color=color, marker='x', label='Number of Moves')
-    ax2.tick_params(axis='y', labelcolor=color)
-
-    fig.tight_layout()
-    plt.title('Performance of A* Algorithm')
-    plt.show()
-
-    """
-
 if __name__ == "__main__":
+
     # Definir diferentes configuraciones iniciales para pruebas
     casos_prueba = [
-        [
+        [ # Caso prueba 01
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None],
             ['*', '*', '*', '*', '*', '*', '*'],
@@ -117,7 +108,7 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
-        [ 
+        [  # Caso prueba 02
             [None, None, '*', '*', 'o', None, None],
             [None, None, '*', 'o', '*', None, None],
             ['o', '*', '*', 'o', 'o', 'o', '*'],
@@ -126,7 +117,7 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
-	[ 
+        [  # Caso prueba 03
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', 'o', '*', None, None],
             ['*', '*', 'o', '*', '*', '*', '*'],
@@ -135,7 +126,7 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
-	[ 
+        [ # Caso prueba 04
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', 'o', '*', None, None],
             ['*', '*', 'o', '*', 'o', '*', '*'],
@@ -144,12 +135,13 @@ if __name__ == "__main__":
             [None, None, '*', '*', '*', None, None],
             [None, None, '*', '*', '*', None, None]
         ],
-        # Agrega más configuraciones si es necesario
+        # Agrega más pruebas si es necesario
     ]
-
+    
+    # Variables almacenar tiempos y movimientos relebantes para el análisis
     tiempos_ejecucion = []
     movimientos = []
-    labels = []
+    nombre = []
 
     for idx, tablero_inicial in enumerate(casos_prueba):
         print(f"\n----------------------------------")
@@ -177,7 +169,7 @@ if __name__ == "__main__":
         tiempo_ejecucion = tiempo_final - tiempo_inicial
         print(f"Tiempo de ejecucion para el caso de prueba {idx + 1}: {tiempo_ejecucion:.2f} segundos")
         tiempos_ejecucion.append(tiempo_ejecucion)
-        labels.append(f"Caso {idx + 1}")
+        nombre.append(f"Caso {idx + 1}")
 
     # Graficar el desempeño
-    #plot_performance(tiempos_ejecucion, movimientos, labels)
+    #plot_performance(tiempos_ejecucion, movimientos, nombre)
